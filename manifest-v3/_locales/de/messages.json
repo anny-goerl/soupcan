@@ -170,5 +170,25 @@
     "nothingToAppeal": {
         "message": "nichts anzufechten",
         "description": "Nachricht die anzeigt wird, wenn Benutzende die keinen Moderierenden sind versuchen einen Anzufechtenden zu melden, der nicht markiert ist."
+    },
+    "extensionContextInvalidated": {
+        "message": "Die Soupcan Erweierung wurde neu geladen was reloaded. Bitte lade die Seite erneut.",
+        "description": "Anzuzeigende Fehlermeldung, wenn die Erweiterunf neu geladen wurde aber die Seite nicht neu geladen wurde (Das verursacht, dass die Erweiterung  nicht mehr funkioniert hat)"
+    },
+    "transphobeCounter": {
+        "message": "Transphoben Counter",
+        "description": "Überschrift für die Konsole, die die Anzahl der transphoben Follower/Following auf einer Userseite zählt."
+    },
+    "counterName_followers": {
+        "message": "Followers",
+        "description": "Unterüberschrift für den Transphoben Counter."
+    },
+    "counterName_following": {
+        "message": "Following",
+        "description": "Unterüberschrift für den Transphoben Counter."
+    },
+    "scrollInstructions": {
+        "message": "(scroll runter damit mehr gezählt werden können.)",
+        "description": "Anleitung um mehr transphobe in der Followers/Following Seite zu zählen."
     }
 }
