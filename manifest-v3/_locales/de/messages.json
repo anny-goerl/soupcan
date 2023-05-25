@@ -190,5 +190,25 @@
     "scrollInstructions": {
         "message": "(scroll runter damit mehr gezählt werden können.)",
         "description": "Anleitung um mehr transphobe in der Followers/Following Seite zu zählen."
+    },
+    "toast_label_tip": {
+        "message": "Aktion",
+        "description": "Überschrift die im Tooltip angezeigt wird, wenn eine Aktion ausgeführt wurde"
+    },
+    "toast_label_info": {
+        "message": "Info",
+        "description": "Überschrift die im Tooltip angezeigt wird, wenn eine Information angezeigt wurde"
+    },
+    "toast_label_success": {
+        "message": "Erfolg",
+        "description": "Überschrift die im Tooltip angezeigt wird, wenn eine Aktion erfolgreich durchgeführt wurde."
+    },
+    "toast_label_warning": {
+        "message": "Warnung",
+        "description": "Überschrift die im Tooltip angezeigt wird, wenn eine ungültige Aktion durchgeführt wurde."
+    },
+    "toast_label_alert": {
+        "message": "Fehker",
+        "description": "Überschrift die im Tooltip angezeigt wird, wenn wenn Fehler aufgetreten ist"
     }
 }
