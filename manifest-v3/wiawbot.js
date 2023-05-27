@@ -27,6 +27,7 @@ function init() {
       "success": browser.i18n.getMessage("toast_label_success"), 
       "warning": browser.i18n.getMessage("toast_label_warning"),
       "alert": browser.i18n.getMessage("toast_label_alert"),
+      "confirm": browser.i18n.getMessage("toast_label_confirm"),
     }
   });
   
@@ -571,6 +572,7 @@ function getLocalUrl(url) {
     "/compose/",
     "/following",
     "/followers",
+    "/creator-subscriptions",
     "/explore/",
     "/i/",
     "/articles/",
@@ -1041,14 +1043,16 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
       dbEntry = await getDatabaseEntry(identifier);
       if (dbEntry || isModerator) {
-        // Add locally
-        var localKey = await hash(identifier + ":" + database["salt"])
-        localEntries[localKey] = {"label": "local-appeal", "reason": "Appealed by you", "status": "pending", "time": Date.now(), "identifier": identifier};
+        if (confirm(`Are you sure you would like to appeal @${identifier}'s label?`)) {
+          // Add locally
+          var localKey = await hash(identifier + ":" + database["salt"])
+          localEntries[localKey] = {"label": "local-appeal", "reason": "Appealed by you", "status": "pending", "time": Date.now(), "identifier": identifier};
 
-        saveLocalEntries();
-        
-        updateAllLabels();
-        sendLabel("appeal", identifier, sendResponse, localKey);
+          saveLocalEntries();
+
+          updateAllLabels();
+          sendLabel("appeal", identifier, sendResponse, localKey);
+        }
       } else {
         notifier.warning(browser.i18n.getMessage("nothingToAppeal"));
       }
@@ -1067,7 +1071,7 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
       const identifier = getIdentifier(localUrl);
       sendResponse(identifier);
-      return true;
+      return identifier;
     } catch (error) {
       notifier.alert(browser.i18n.getMessage("genericError", [error]));
     }
@@ -1090,7 +1094,20 @@ function checkForInvalidExtensionContext() {
     return false;
   } catch (error) {
     if (!contextInvalidated) {
-      notifier.alert(contextInvalidatedMessage);
+      notifier.confirm(contextInvalidatedMessage, () => location.reload());
+      //awn-popup-confirm
+      var popupElements = document.getElementsByClassName("awn-popup-confirm");
+      var bodyBackgroundColor = document.getElementsByTagName("body")[0].style["background-color"];
+      var textColor = window.getComputedStyle(document.querySelector("span"), null).getPropertyValue("color");
+      var fontFamily = window.getComputedStyle(document.querySelector("span"), null).getPropertyValue("font-family");
+      if (popupElements) {
+        for (let el of popupElements) {
+          el.style["background-color"] = bodyBackgroundColor;
+          el.style["color"] = textColor;
+          el.style["font-family"] = fontFamily;
+        }
+      }
+
       contextInvalidated = true;
       intervals.forEach(interval => {
         clearInterval(interval);
