@@ -172,7 +172,7 @@
         "description": "Nachricht die anzeigt wird, wenn Benutzende die keinen Moderierenden sind versuchen einen Anzufechtenden zu melden, der nicht markiert ist."
     },
     "extensionContextInvalidated": {
-        "message": "Die Soupcan Erweierung wurde neu geladen was reloaded. Bitte lade die Seite erneut.",
+        "message": "Soupcan wurde nicht geladen oder aktualisert und wird nicht funktionieren bis die Seite neu geladen wird. Bitte klicke OK um die Seite neu zu laden",
         "description": "Anzuzeigende Fehlermeldung, wenn die Erweiterunf neu geladen wurde aber die Seite nicht neu geladen wurde (Das verursacht, dass die Erweiterung  nicht mehr funkioniert hat)"
     },
     "transphobeCounter": {
@@ -210,5 +210,9 @@
     "toast_label_alert": {
         "message": "Fehker",
         "description": "Überschrift die im Tooltip angezeigt wird, wenn wenn Fehler aufgetreten ist"
+    },
+    "toast_label_confirm": {
+        "message": "Frage",
+        "description": "Überschrift die angezeigt wird, wenn eine OK/Abbrechen Antwort erwartet wird."
     }
 }
