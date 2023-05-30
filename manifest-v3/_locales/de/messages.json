@@ -172,7 +172,7 @@
         "description": "Nachricht die anzeigt wird, wenn Benutzende die keinen Moderierenden sind versuchen einen Anzufechtenden zu melden, der nicht markiert ist."
     },
     "extensionContextInvalidated": {
-        "message": "Soupcan wurde nicht geladen oder aktualisert und wird nicht funktionieren bis die Seite neu geladen wird. Bitte klicke OK um die Seite neu zu laden",
+        "message": "Soupcan wurde nicht geladen oder aktualisert und wird nicht funktionieren bis die Seite neu geladen wird. Würdest Du bitte die Seite aktualisieren?",
         "description": "Anzuzeigende Fehlermeldung, wenn die Erweiterunf neu geladen wurde aber die Seite nicht neu geladen wurde (Das verursacht, dass die Erweiterung  nicht mehr funkioniert hat)"
     },
     "transphobeCounter": {
@@ -213,6 +213,14 @@
     },
     "toast_label_confirm": {
         "message": "Frage",
-        "description": "Überschrift die angezeigt wird, wenn eine OK/Abbrechen Antwort erwartet wird."
+        "description": "Überschrift die angezeigt wird, wenn eine Ja/Nein Antwort erwartet wird."
+    },
+    "toast_label_confirmOk": {
+        "message": "Ja",
+        "description": "Label für Bestätiging/ja Button im Bestätigingsdialog"
+    },
+    "toast_label_confirmCancel": {
+        "message": "Nein",
+        "description": "Label für Abbrechen/nein Button im Bestätigingsdialog"
     }
 }
