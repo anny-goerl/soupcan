@@ -31,6 +31,10 @@
         "message": "👩‍⚖️ moderiere Meldungen",
         "description": "Kontext Menü Aktion um Meldungen zu überprüfen und zu moderieren."
     },
+    "actionOptions": {
+        "message": "⚙ Optionen",
+        "description": "Kontextmenüaktion um die Optionen der Erweiterung zu ändern."
+    },
     "reportReasonInstructions": {
         "message": "<h2>🍅 Melde @$ID$</h2><p>Du kannst hier Belege für deine Meldung hinzufügen (bspw. Links zu Tweets, etc.), wenn du denkst, diese sind hilfreich. Wenn du denkst es ist eindeutig genug, dann kannst du das Feld auch leerlassen.</p>",
         "description": "Anleitung für den Benutzenden um eine Begründung anzugeben.",
