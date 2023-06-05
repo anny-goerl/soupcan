@@ -25,13 +25,16 @@ function start() {
           browser.contextMenus.create({
             id: "moderate",
             title: browser.i18n.getMessage("actionModerateReports"),
-            contexts: ["page"],
-            targetUrlPatterns: ["*://*.twitter.com/*"]
+            contexts: ["page"]
           });
         }
       });
     }
   });
+
+  if (!browser.menus) {
+    browser.menus = browser.contextMenus;
+  }
 
   browser.contextMenus.create({
     id: "report-transphobe",
@@ -51,17 +54,20 @@ function start() {
     contexts: ["link"],
     targetUrlPatterns: ["*://*.twitter.com/*"]
   });
-  browser.contextMenus.create({
+  browser.menus.create({
     id: "run-setup",
     title: browser.i18n.getMessage("actionRerunSetup"),
-    contexts: ["page"],
-    targetUrlPatterns: ["*://*.twitter.com/*"]
+    contexts: ["page"]
   });
-  browser.contextMenus.create({
+  browser.menus.create({
     id: "update-database",
     title: browser.i18n.getMessage("actionUpdateDatabase"),
-    contexts: ["page"],
-    targetUrlPatterns: ["*://*.twitter.com/*"]
+    contexts: ["page"]
+  });
+  browser.menus.create({
+    id: "options",
+    title: browser.i18n.getMessage("actionOptions"),
+    contexts: ["page"]
   });
 
   browser.contextMenus.onClicked.addListener(function (info, tab) {
@@ -101,7 +107,11 @@ function start() {
       }).then((response) => {
         console.log("Response is " + response);
       });
-    } else if (action == "moderate") {
+    } else if (action == "options") {
+      browser.tabs.create({
+        url: getURL('options.html')
+      });
+    }else if (action == "moderate") {
       browser.tabs.create({
         url: getURL('moderation.html')
       });
@@ -122,7 +132,7 @@ const handleFetch = async (url, sendResponse) => {
 
   }
   const text = await response.text();
-  sendResponse({"text": text, "json": json});
+  sendResponse({"status": response.status, "text": text, "json": json});
 };
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {

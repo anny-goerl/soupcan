@@ -29,7 +29,8 @@ function init() {
       "alert": browser.i18n.getMessage("toast_label_alert"),
       "confirm": browser.i18n.getMessage("toast_label_confirm"),
       "confirmOk": browser.i18n.getMessage("toast_label_confirmOk"),
-      "confirmCancel": browser.i18n.getMessage("toast_label_confirmCancel")
+      "confirmCancel": browser.i18n.getMessage("toast_label_confirmCancel"),
+      "async": browser.i18n.getMessage("toast_label_async"),
     }
   });
   
@@ -105,6 +106,32 @@ function applyOptions() {
     if (options["preventZalgoText"]) {
       body.classList.add("wiawbe-hide-zalgo");
     }
+
+    applyHideAds();
+  });
+}
+
+function applyHideAds() {
+  // Hide promoted tweets
+  var tweets = document.querySelectorAll("article[data-testid='tweet']");
+
+  tweets.forEach((tweet) => {
+    var promotedPath = tweet.querySelector("path[d*='M19.498 3h-15c-1.381']");
+    if (promotedPath) {
+      if (options["hideAds"]) {      
+        tweet.style.display = "none";
+      } else {
+        tweet.style.display = "";
+      }
+      var parentDiv = tweet.closest("div[data-testid='cellInnerDiv']");
+      if (parentDiv) {
+        if (options["hideAds"]) {      
+          parentDiv.style.display = "none";
+        } else {
+          parentDiv.style.display = "";
+        }
+      }
+    }
   });
 }
 
@@ -115,12 +142,14 @@ function createObserver() {
         updatePage();
       }
       if (mutation.type == 'childList') {
+        processForMasking();
         for (const node of mutation.addedNodes) {
           if (node instanceof HTMLAnchorElement) {
             processLink(node);
           }
           if (node instanceof HTMLDivElement) {
             checkNode(node, true);
+            applyHideAds();
             if (isProfilePage()) {
               applyLinkToUsernameOnProfilePage();
             }
@@ -143,7 +172,7 @@ function createObserver() {
 var nodeCheckCache = {}
 var divCacheId = 1;
 
-function checkNode(node, force = false) {
+function checkNode(node, force = false, depth = 0) {
   node.cacheId = node.cacheId || ('hashID' + (divCacheId++));
 
   if (!force) {
@@ -158,26 +187,25 @@ function checkNode(node, force = false) {
 
   var dt = node.getAttribute("data-testid")
   if (dt == "TypeaheadUser" || dt == "typeaheadRecentSearchesItem" || dt == "User-Name" || dt == "UserName" || dt == "conversation") {
-    processDiv(node);
+    processDiv(node, false, depth);
   }
 
   if (dt == "tweet") {
     // mark the tweet as a labelled area
-    processDiv(node, true)
+    processDiv(node, true, depth)
   }
-
-  processForMasking(node);
 
   if (node.hasChildNodes()) {
     for(var i = 0; i < node.children.length; i++){
       var child = node.children[i];
-      checkNode(child);
+      checkNode(child, force, depth + 1);
     }
   }
 }
 
-function processForMasking(node) {
-  var tweets = node.querySelectorAll("article[data-testid='tweet']:not([data-wiawbe-mask-checked])");
+function processForMasking() {
+  console.log("Processing for masking");
+  var tweets = document.querySelectorAll("article[data-testid='tweet']:not([data-wiawbe-mask-checked])");
 
   tweets.forEach(tweet => {
     applyMasking(tweet);
@@ -259,6 +287,9 @@ function applyMasking(tweet) {
 }
 
 function updateAllLabels() {
+  processForMasking();
+  applyHideAds();
+
   for (const a of document.getElementsByTagName('a')) {
     processLink(a);
   }
@@ -322,7 +353,7 @@ function hash(string) {
   });
 }
 
-async function processDiv(div, markArea = false) {
+async function processDiv(div, markArea = false, depth = -1) {
   var div_identifier = div.innerHTML.replace(/^.*?>@([A-Za-z0-9_]+)<\/span><\/div>.*$/gs, "$1");
 
   if (!div_identifier) {
@@ -331,6 +362,8 @@ async function processDiv(div, markArea = false) {
       return;
     }
   }
+
+  console.log("Processing div at depth " + depth + " with div_identifier " + div_identifier);
 
   var database_entry = await getDatabaseEntry(div_identifier);
 
@@ -460,6 +493,12 @@ async function processLink(a) {
   var identifier = null;
 
   var dataIdentifier = a.getAttribute("data-wiawbeidentifier");
+
+  if (a.querySelector("a>time")) {
+    a.removeAttribute("data-wiawbeidentifier");
+    return;
+  }
+
   if (dataIdentifier) {
     var identifier = dataIdentifier;
   } else {
@@ -584,12 +623,17 @@ function getLocalUrl(url) {
     "/help/",
     "/troubleshooting/",
     "/analytics",
+    "/retweets"
   ]
 
   for (const reservedSlug of reservedSlugs) {
     if (url.includes(reservedSlug)) {
       return null;
     }
+  }
+
+  if (url.includes("/status") && url.includes("/likes")) {
+    return null;
   }
 
   return url;
@@ -649,7 +693,13 @@ function doCountTerfs(kind) {
       usersCounted = [];
 
       // Create a copy of the "Who to follow" panel as a basis for the transphobe counter panel
-      var whoToFollowPanel = document.querySelector("div[data-testid='sidebarColumn'] div[tabindex='0'] :has(>div>aside)");
+      var whoToFollowPanelAside = document.querySelector("div[data-testid='sidebarColumn'] div[tabindex='0'] div>aside");
+      var whoToFollowPanel = whoToFollowPanelAside.parentElement.parentElement;
+
+      if (!whoToFollowPanel) {
+        return;
+      }
+
       var transphobeCountPanel = whoToFollowPanel.cloneNode(true);
       // Set the id for later reference
       transphobeCountPanel.id = "soupcan-terf-count";
@@ -660,7 +710,7 @@ function doCountTerfs(kind) {
       // Remove "Show more" link
       transphobeCountPanel.querySelector("aside>a").remove();
       // Remove all entries but the first in the panel
-      transphobeCountPanel.querySelectorAll("aside>div:not(:has(h2)) div[data-testid='UserCell']:not(:nth-child(1))").forEach(el => {
+      transphobeCountPanel.querySelectorAll("aside>div div[data-testid='UserCell']:not(:nth-child(1))").forEach(el => {
         el.remove();
       });
       // Remove all "Follows you" badges
@@ -674,7 +724,7 @@ function doCountTerfs(kind) {
       // Remove the pointer cursor from the entry
       transphobeCountPanel.querySelector("div[data-testid='UserCell']").style.cursor = "default";
       // Remove the UserCell attribute to avoid conflicting queries
-      transphobeCountPanel.querySelector("aside>div:not(:has(h2)) div[data-testid='UserCell']").removeAttribute("data-testid");
+      transphobeCountPanel.querySelector("aside>div div[data-testid='UserCell']").removeAttribute("data-testid");
       // Unlink the anchor tags
       transphobeCountPanel.querySelectorAll("a").forEach(anchor => {
         anchor.style.cursor = "default";
@@ -683,7 +733,7 @@ function doCountTerfs(kind) {
       // Change the label
       transphobeCountPanel.querySelector("a span").textContent = browser.i18n.getMessage("counterName_" + kind) + " " + browser.i18n.getMessage("scrollInstructions");
       // Change the subtext
-      var countSpan = transphobeCountPanel.querySelectorAll("a:has(span)")[1].querySelector("span");
+      var countSpan = transphobeCountPanel.querySelectorAll("a")[1].querySelector("span");
       countSpan.id = "soupcan-count";
       countSpan.textContent = "0/0";
 
@@ -780,18 +830,19 @@ async function sendLabel(reportType, identifier, sendResponse, localKey, reason 
 
   var successMessage = "";
   var failureMessage = "";
+  var notificationMessage = "";
   var endpoint = "";
 
   if (reportType == "transphobe") {
     endpoint = "report-transphobe";
     successMessage = browser.i18n.getMessage("reportReceived", [identifier]);
     failureMessage = browser.i18n.getMessage("reportSubmissionFailed") + " ";
-    notifier.tip(browser.i18n.getMessage("sendingReport", [identifier]));
+    notificationMessage = browser.i18n.getMessage("sendingReport", [identifier]);
   } else if (reportType == "appeal") {
     endpoint = "appeal-label";
     successMessage = browser.i18n.getMessage("appealReceived", [identifier]);
     failureMessage = browser.i18n.getMessage("appealSubmissionFailed") + " ";
-    notifier.tip(browser.i18n.getMessage("sendingAppeal", [identifier]));
+    notificationMessage = browser.i18n.getMessage("sendingAppeal", [identifier]);
   } else {
     notifier.alert(browser.i18n.getMessage("invalidReportType", [reportType]));
     return;
@@ -800,28 +851,34 @@ async function sendLabel(reportType, identifier, sendResponse, localKey, reason 
   localEntries[localKey]["time"] = Date.now();
   saveLocalEntries();
 
-
+  var fetchUrl = "https://api.beth.lgbt/" + endpoint + "?state=" + state + "&screen_name=" + identifier + "&reason=" + encodeURI(reason);
   // Report to WIAW
-  browser.runtime.sendMessage({
-    "action": "fetch",
-    "url": "https://api.beth.lgbt/" + endpoint + "?state=" + state + "&screen_name=" + identifier + "&reason=" + encodeURI(reason)
-  }).then(async response => {
-    try {
-      const jsonData = response["json"];
+  notifier.async(
+    doFetch(fetchUrl),
+    async response => {
+      try {
+        if (response["status"] != 200) {
+          throw new Error(fetchUrl + ": " + browser.i18n.getMessage("serverFailure") + " (" + response["status"] + ")");
+        }
+        const jsonData = response["json"];
 
-      localEntries[localKey]["status"] = "received";
+        localEntries[localKey]["status"] = "received";
 
-      saveLocalEntries();
+        saveLocalEntries();
 
-      notifier.success(successMessage);
-      sendResponse(jsonData);
-    } catch (error) {
-      notifier.alert(failureMessage + error);
-      
-      updateAllLabels();
-      sendResponse("Failed");
-    }
-  });
+        notifier.success(successMessage);
+        sendResponse(jsonData);
+      } catch (error) {
+        notifier.alert(failureMessage + error);
+        
+        updateAllLabels();
+        sendResponse("Failed");
+      }
+    },
+    response => { notifier.alert(failureMessage + ": " + response["status"]) },
+    notificationMessage
+  );
+
   return true;
 }
 
@@ -839,12 +896,18 @@ function sendPendingLabels() {
 
       if (!when || now > when + 10000) { // it's been at least 10 seconds
         const reportType = localEntry["label"].replace("local-", "");
+
+        var fetchUrl = "https://api.beth.lgbt/check-report?state=" + state + "&screen_name=" + localEntry["identifier"];
         // check if the report already went through
         browser.runtime.sendMessage({
           "action": "fetch",
-          "url": "https://api.beth.lgbt/check-report?state=" + state + "&screen_name=" + localEntry["identifier"]
+          "url": fetchUrl
         }).then(async response => {
           try {
+            if (response["status"] != 200) {
+              throw new Error(fetchUrl + ": " + browser.i18n.getMessage("serverFailure") + " (" + response["status"] + ")");
+            }
+
             const reported = response["text"];
             if (reported == "1") {
               localEntries[localKey]["status"] = "received";
@@ -886,11 +949,16 @@ async function checkForDatabaseUpdates() {
   if (database) {
     if (database["last_updated"]) {
       var lastUpdated = database["last_updated"];
+      var fetchUrl = "https://api.beth.lgbt/get-db-version";
       if (Date.now() > lastUpdated + 5 * 60 * 1000) { // 5 minutes
         browser.runtime.sendMessage({
           "action": "fetch",
-          "url": "https://api.beth.lgbt/get-db-version"
+          "url": fetchUrl
         }).then(async response => {
+          if (response["status"] != 200) {
+            throw new Error(fetchUrl + ": " + browser.i18n.getMessage("serverFailure") + " (" + response["status"] + ")");
+          }
+
           const version = response["text"];
           const numberVersion = parseInt(version);
           if (!database["version"] || database["version"] < numberVersion) {
@@ -904,40 +972,67 @@ async function checkForDatabaseUpdates() {
   }
 }
 
+/*
+ * Returns a promise for fetching a URL.
+ */
+async function doFetch(url) {
+  return new Promise((resolve, reject) => {
+    function callback(response) {
+      if (response["status"] == 200) {
+        resolve(response);
+      } else {
+        reject(response);
+      }
+    };
+
+    browser.runtime.sendMessage({
+      "action": "fetch",
+      "url": url
+    }, null, callback);
+  });
+}
+
 async function updateDatabase(sendResponse, version) {
   if (checkForInvalidExtensionContext()) {
     return;
   }
 
-  notifier.info(browser.i18n.getMessage("databaseDownloading"));
   database["downloading"] = true;
-  browser.runtime.sendMessage({
-    "action": "fetch",
-    "url": "https://wiaw-extension.s3.us-west-2.amazonaws.com/dataset.json"
-  }).then(async response => {
-    try {
-      const jsonData = response["json"];
+  var fetchUrl = "https://wiaw-extension.s3.us-west-2.amazonaws.com/dataset.json"
 
-      database = {
-        "version": version,
-        "last_updated": Date.now(),
-        "salt": jsonData["salt"],
-        "entries": jsonData["entries"],
-        "downloading": false,
-      };
+  notifier.async(
+    doFetch(fetchUrl),
+    async response => {
+      try {
+        if (response["status"] != 200) {
+          throw new Error(fetchUrl + ": " + browser.i18n.getMessage("serverFailure") + " (" + response["status"] + ")");
+        }
 
-      browser.storage.local.set({
-        "database": database
-      });
-      notifier.success(browser.i18n.getMessage("databaseUpdated"));
-      sendResponse("OK");
-    } catch (error) {
-      database["downloading"] = false;
-      notifier.alert(browser.i18n.getMessage("databaseUpdateFailed", [error]));
-      sendResponse("Fail");
-      return true;
-    }
-  });
+        const jsonData = response["json"];
+
+        database = {
+          "version": jsonData["version"],
+          "last_updated": Date.now(),
+          "salt": jsonData["salt"],
+          "entries": jsonData["entries"],
+          "downloading": false,
+        };
+
+        browser.storage.local.set({
+          "database": database
+        });
+        notifier.success(browser.i18n.getMessage("databaseUpdated"));
+        sendResponse("OK");
+      } catch (error) {
+        database["downloading"] = false;
+        notifier.alert(browser.i18n.getMessage("databaseUpdateFailed", [error.msg]));
+        sendResponse("Fail");
+        return true;
+      }
+    },
+    response => { notifier.alert(browser.i18n.getMessage("databaseUpdateFailed", [response["status"]])); },
+    browser.i18n.getMessage("databaseDownloading")
+  );
 
   return true;
 }
@@ -946,11 +1041,6 @@ async function updateDatabase(sendResponse, version) {
 browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   if (message.action == "report-transphobe") {
     var initialReason = "";
-    try {
-      initialReason = contextMenuElement.closest("article").querySelector("a[href*='status']").href;
-    } catch {
-
-    }
 
     try {
       if (!state) {
@@ -965,6 +1055,12 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         return true;
       }
       const identifier = getIdentifier(localUrl);
+
+      try {
+        initialReason = contextMenuElement.closest("article").querySelector("a[href*='status'][href*='" + identifier + "' i]").href;
+      } catch {
+  
+      }
 
       // see if they're already reported
       const dbEntry = await getDatabaseEntry(identifier);
