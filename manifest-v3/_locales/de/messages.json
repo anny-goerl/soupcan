@@ -9,35 +9,35 @@
     },
     "actionReportTransphobe": {
         "message": "🍅 melde eine transphobe Person",
-        "description": "Kontext Menü Aktion um transphobe Menschen zu melden."
+        "description": " Kontextmenüaktion, um transphobe Menschen zu melden."
     },
     "searchTweets": {
         "message": "🔍 Durchsuche Tweets nach Gender-verwandten Keywörtern",
-        "description": "Kontext Menü Aktion um einen user nach Gender-vewandten Keywörtern zu durchsuchen."
+        "description": " Kontextmenüaktion, um einen User nach Gender-verwandten Keywörtern zu durchsuchen."
     },
     "actionAppealLabel": {
         "message": "😇 Meldung anfechten",
-        "description": "Kontext Menü Aktion um eine Bezeichnung anzufechten."
+        "description": " Kontextmenüaktion, um eine Bezeichnung anzufechten."
     },
     "actionRerunSetup": {
         "message": "📐 Setup erneut durchführen",
-        "description": "Kontext Menü Aktion um den Setup-Prozess noch einmal laufen zu lassen."
+        "description": " Kontextmenüaktion, um den Setup-Prozess noch einmal laufen zu lassen."
     },
     "actionUpdateDatabase": {
         "message": "🌐 Datenbank aktualisieren",
-        "description": "Kontext Menü Aktion um die Datenbank zu aktualisieren."
+        "description": " Kontextmenüaktion, um die Datenbank zu aktualisieren."
     },
     "actionModerateReports": {
         "message": "👩‍⚖️ moderiere Meldungen",
-        "description": "Kontext Menü Aktion um Meldungen zu überprüfen und zu moderieren."
+        "description": "Kontextmenüaktion, um Meldungen zu überprüfen und zu moderieren."
     },
     "actionOptions": {
         "message": "⚙ Optionen",
-        "description": "Kontextmenüaktion um die Optionen der Erweiterung zu ändern."
+        "description": "Kontextmenüaktion, um die Optionen der Erweiterung zu ändern."
     },
     "reportReasonInstructions": {
         "message": "<h2>🍅 Melde @$ID$</h2><p>Du kannst hier Belege für deine Meldung hinzufügen (bspw. Links zu Tweets, etc.), wenn du denkst, diese sind hilfreich. Wenn du denkst es ist eindeutig genug, dann kannst du das Feld auch leerlassen.</p>",
-        "description": "Anleitung für den Benutzenden um eine Begründung anzugeben.",
+        "description": "Anleitung für den Benutzenden, um eine Begründung anzugeben.",
         "placeholders": {
             "id" : {
                 "content" : "$1",
@@ -73,7 +73,7 @@
     },
     "invalidTarget": {
         "message": "Umgültiges Ziel",
-        "description": "Fehlermeldung die angeziegt wird, wenn versucht wird auf einem ungültigen Ziel eine Aktion auszuführen"
+        "description": "Fehlermeldung die angezeigt wird, wenn versucht wird auf einem ungültigen Ziel eine Aktion auszuführen"
     },
     "databaseDownloading": {
         "message": "Datenbank wird heruntergeladen...",
@@ -81,11 +81,11 @@
     },
     "databaseUpdated": {
         "message": "Datenbank aktualisiert!",
-        "description": "Erfolgreiche Tooltip-Nachricht wenn die Datenbank heruntergeladen wurde."
+        "description": "Erfolgreiche Tooltip-Nachricht, wenn die Datenbank heruntergeladen wurde."
     },
     "databaseUpdateFailed": {
         "message": "Datenbankaktualisierung fehlgeschlagen! $ERROR$",
-        "description": "Fehlermeldung wenn die Datenbankaktualisierung fehlschlägt.",
+        "description": "Fehlermeldung, wenn die Datenbankaktualisierung fehlschlägt.",
         "placeholders": {
             "error" : {
                 "content" : "$1",
@@ -134,7 +134,7 @@
         }
     },
     "reportSubmissionFailed": {
-        "message": "Fehler bei der Medlungsübermittlung:",
+        "message": "Fehler bei der Meldungsübermittlung:",
         "description": "Tooltip-Nachricht wenn es eine Fehlermeldung bei der Meldungsübermittlung gab."
     },
     "sendingAppeal": {
@@ -176,19 +176,19 @@
         "description": "Nachricht die anzeigt wird, wenn Benutzende die keinen Moderierenden sind versuchen einen Anzufechtenden zu melden, der nicht markiert ist."
     },
     "extensionContextInvalidated": {
-        "message": "Soupcan wurde nicht geladen oder aktualisert und wird nicht funktionieren bis die Seite neu geladen wird. Würdest Du bitte die Seite aktualisieren?",
-        "description": "Anzuzeigende Fehlermeldung, wenn die Erweiterunf neu geladen wurde aber die Seite nicht neu geladen wurde (Das verursacht, dass die Erweiterung  nicht mehr funkioniert hat)"
+        "message": "Soupcan wurde nicht geladen oder aktualisiert und wird nicht funktionieren, bis die Seite neu geladen wird. Würdest Du bitte die Seite aktualisieren?",
+        "description": "Anzuzeigende Fehlermeldung, wenn die Erweiterung neu geladen wurde aber die Seite nicht neu geladen wurde (Das verursacht, dass die Erweiterung  nicht mehr funkioniert hat)"
     },
     "transphobeCounter": {
         "message": "Transphoben Counter",
         "description": "Überschrift für die Konsole, die die Anzahl der transphoben Follower/Following auf einer Userseite zählt."
     },
     "counterName_followers": {
-        "message": "Followers",
+        "message": "Follower",
         "description": "Unterüberschrift für den Transphoben Counter."
     },
     "counterName_following": {
-        "message": "Following",
+        "message": "Gefolgt",
         "description": "Unterüberschrift für den Transphoben Counter."
     },
     "scrollInstructions": {
@@ -197,23 +197,23 @@
     },
     "toast_label_tip": {
         "message": "Aktion",
-        "description": "Überschrift die im Tooltip angezeigt wird, wenn eine Aktion ausgeführt wurde"
+        "description": "Überschrift, die im Tooltip angezeigt wird, wenn eine Aktion ausgeführt wurde"
     },
     "toast_label_info": {
         "message": "Info",
-        "description": "Überschrift die im Tooltip angezeigt wird, wenn eine Information angezeigt wurde"
+        "description": "Überschrift, die im Tooltip angezeigt wird, wenn eine Information angezeigt wurde"
     },
     "toast_label_success": {
         "message": "Erfolg",
-        "description": "Überschrift die im Tooltip angezeigt wird, wenn eine Aktion erfolgreich durchgeführt wurde."
+        "description": "Überschrift, die im Tooltip angezeigt wird, wenn eine Aktion erfolgreich durchgeführt wurde."
     },
     "toast_label_warning": {
         "message": "Warnung",
-        "description": "Überschrift die im Tooltip angezeigt wird, wenn eine ungültige Aktion durchgeführt wurde."
+        "description": "Überschrift, die im Tooltip angezeigt wird, wenn eine ungültige Aktion durchgeführt wurde."
     },
     "toast_label_alert": {
-        "message": "Fehker",
-        "description": "Überschrift die im Tooltip angezeigt wird, wenn wenn Fehler aufgetreten ist"
+        "message": "Fehler",
+        "description": "Überschrift, die im Tooltip angezeigt wird, wenn wenn Fehler aufgetreten ist"
     },
     "toast_label_confirm": {
         "message": "Frage",
@@ -221,10 +221,10 @@
     },
     "toast_label_confirmOk": {
         "message": "Ja",
-        "description": "Label für Bestätiging/ja Button im Bestätigingsdialog"
+        "description": "Label für Bestätigung/ja Button im Bestätigungsdialog"
     },
     "toast_label_confirmCancel": {
         "message": "Nein",
-        "description": "Label für Abbrechen/nein Button im Bestätigingsdialog"
+        "description": "Label für Abbrechen/nein Button im Bestätigungsdialog"
     }
 }
